@@ -27,6 +27,7 @@
 	<div class="panel-body">
 	  <form action="{{ action }}" method="post" enctype="multipart/form-data" id="form-payment" class="form-horizontal">
 	    <div class="tab-content">
+          <h2>{{ ntp_plugin_configurations }}</h2>
 		  <div class="form-group required">
 		    <label class="col-sm-2 control-label" for="entry-signature">{{ entry_signature }}</label>
 			<div class="col-sm-10">
@@ -178,9 +179,299 @@
               <input type="text" name="payment_mobilpay_sort_order" value="{{ payment_mobilpay_sort_order }}" placeholder="{{ entry_sort_order }}" id="input-sort-order" class="form-control"/>
             </div>
           </div>
+          <h2>{{ certification_key_upload }}</h2>
+          <div class="form-group">
+              <label class="col-sm-2 control-label" for="input-live_pub_key">{{ entry_cert_live_pub_key_file }}</label>
+              <div class="col-sm-10">
+                  <input type="text" name="payment_mobilpay_live_pub_key" value="{{ payment_mobilpay_live_pub_key }}" placeholder="{{ entry_cert_live_pub_key_file }}" id="input-live_pub_key" class="form-control"/>
+              </div>
+          </div>
+          <div class="form-group">
+              <label class="col-sm-2 control-label" for="input-live_pri_key">{{ entry_cert_live_pri_key_file }}</label>
+              <div class="col-sm-10">
+                  <input type="text" name="payment_mobilpay_live_pri_key" value="{{ payment_mobilpay_live_pri_key }}" placeholder="{{ entry_cert_live_pri_key_file }}" id="input-live_pri_key" class="form-control"/>
+              </div>
+          </div>
+          <div class="form-group">
+              <label class="col-sm-2 control-label" for="input-sand_pub_key">{{ entry_cert_sand_pub_key_file }}</label>
+              <div class="col-sm-10">
+                  <input type="text" name="payment_mobilpay_sand_pub_key" value="{{ payment_mobilpay_sand_pub_key }}" placeholder="{{ entry_cert_sand_pub_key_file }}" id="input-sand_pub_key" class="form-control"/>
+              </div>
+          </div>
+          <div class="form-group">
+              <label class="col-sm-2 control-label" for="input-sand_pri_key">{{ entry_cert_sand_pri_key_file }}</label>
+              <div class="col-sm-10">
+                  <input type="text" name="payment_mobilpay_sand_pri_key" value="{{ payment_mobilpay_sand_pri_key }}" placeholder="{{ entry_cert_sand_pri_key_file }}" id="input-sand_pri_key" class="form-control"/>
+              </div>
+          </div>
+          <h2>{{ ntp_agreements }}</h2>
+          <h4>{{ ntp_conditions_agreements }}</h4>
+          <div class="form-group">
+              <label class="col-sm-2 control-label" for="input-conditions_complete_description">{{ declare_complete_description }}</label>
+              <div class="col-sm-10">
+                  <select name="payment_mobilpay_conditions_complete_description" id="input-conditions_complete_description" class="form-control">
+                        <option value="" selected="selected">{{ text_chose }}</option>
+                      {% if payment_mobilpay_conditions_complete_description == 'yes' %}
+                          <option value="yes" selected="selected">{{ text_yes }}</option>
+                      {% else %}
+                          <option value="yes">{{ text_yes }}</option>
+                      {% endif %}
+                      {% if payment_mobilpay_conditions_complete_description == 'no' %}
+                          <option value="no" selected="selected">{{ text_no }}</option>
+                      {% else %}
+                          <option value="no">{{ text_no }}</option>
+                      {% endif %}
+                  </select>
+                  <h5>{{ declare_complete_description_detail }}</h5>
+                  <div class="ntp_error completeDescription"></div>
+              </div>
+          </div>
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label" for="input-conditions_prices_currency">{{ declare_prices_currency }}</label>
+                <div class="col-sm-10">
+                    <select name="payment_mobilpay_conditions_prices_currency" id="input-conditions_prices_currency" class="form-control">
+                        <option value="" selected="selected">{{ text_chose }}</option>
+                        {% if payment_mobilpay_conditions_prices_currency == 'yes' %}
+                            <option value="yes" selected="selected">{{ text_yes }}</option>
+                        {% else %}
+                            <option value="yes">{{ text_yes }}</option>
+                        {% endif %}
+                        {% if payment_mobilpay_conditions_prices_currency == 'no' %}
+                            <option value="no" selected="selected">{{ text_no }}</option>
+                        {% else %}
+                            <option value="no">{{ text_no }}</option>
+                        {% endif %}
+                    </select>
+                    <h5>{{ declare_prices_currency_detail }}</h5>
+                    <div class="ntp_error priceCurrency"></div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label" for="input-clarity_contact">{{ declare_clarity_contact }}</label>
+                <div class="col-sm-10">
+                    <select name="payment_mobilpay_clarity_contact" id="input-clarity_contact" class="form-control">
+                        <option value="" selected="selected">{{ text_chose }}</option>
+                        {% if payment_mobilpay_clarity_contact == 'yes' %}
+                            <option value="yes" selected="selected">{{ text_yes }}</option>
+                        {% else %}
+                            <option value="yes">{{ text_yes }}</option>
+                        {% endif %}
+                        {% if payment_mobilpay_clarity_contact == 'no' %}
+                            <option value="no" selected="selected">{{ text_no }}</option>
+                        {% else %}
+                            <option value="no">{{ text_no }}</option>
+                        {% endif %}
+                    </select>
+                    <h5>{{ declare_clarity_contact_detail }}</h5>
+                    <div class="ntp_error contactInfo"></div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label" for="input-conditions_forbidden_business">{{ declare_forbidden_business }}<h6>{{ ntp_not_accpeted_business }}</h6></label>
+                <div class="col-sm-10">
+                    <ul>
+                        <li>{{ forbidden_item_1 }}</li>
+                        <li>{{ forbidden_item_2 }}</li>
+                        <li>{{ forbidden_item_3 }}</li>
+                        <li>{{ forbidden_item_4 }}</li>
+                        <li>{{ forbidden_item_5 }}</li>
+                        <li>{{ forbidden_item_6 }}</li>
+                        <li>{{ forbidden_item_7 }}</li>
+                    </ul>
+                    <select name="payment_mobilpay_conditions_forbidden_business" id="input-conditions_forbidden_business" class="form-control">
+                        <option value="" selected="selected">{{ text_chose }}</option>
+                        {% if payment_mobilpay_conditions_forbidden_business == 'yes' %}
+                            <option value="yes" selected="selected">{{ text_yes }}</option>
+                        {% else %}
+                            <option value="yes">{{ text_yes }}</option>
+                        {% endif %}
+                        {% if payment_mobilpay_conditions_forbidden_business == 'no' %}
+                            <option value="no" selected="selected">{{ text_no }}</option>
+                        {% else %}
+                            <option value="no">{{ text_no }}</option>
+                        {% endif %}
+                    </select>
+                    <h5>{{ declare_forbidden_business_detail }}</h5>
+                    <div class="ntp_error forbiddenBusiness"></div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label" for="input-conditions_has_ssl">{{ declare_ssl_certificate }}</label>
+                <div class="col-sm-10">
+                    <select name="payment_mobilpay_conditions_has_ssl" id="input-conditions_has_ssl" class="form-control">
+                        <option value="" selected="selected">{{ text_chose }}</option>
+                        {% if payment_mobilpay_conditions_has_ssl == 'yes' %}
+                            <option value="yes" selected="selected">{{ text_yes }}</option>
+                        {% else %}
+                            <option value="yes">{{ text_yes }}</option>
+                        {% endif %}
+                        {% if payment_mobilpay_conditions_has_ssl == 'no' %}
+                            <option value="no" selected="selected">{{ text_no }}</option>
+                        {% else %}
+                            <option value="no">{{ text_no }}</option>
+                        {% endif %}
+                    </select>
+                    <h5>{{ declare_ssl_certificate_detail }}</h5>
+                    <div class="ntp_error hasSSL">xxx</div>
+                </div>
+            </div>
+
+
+            <h4>{{ ntp_mandatory_pages }}</h4>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label" for="input-terms_conditions_url">{{ terms_conditions_url }}</label>
+                    <div class="col-sm-10">
+                        <input type="text" name="payment_mobilpay_terms_conditions_url" value="{{ payment_mobilpay_terms_conditions_url }}" placeholder="{{ entry_terms_conditions_page_url }}" id="input-terms_conditions_url" class="form-control"/>
+                        <h5>{{ terms_conditions_url_detail }}</h5>
+                        <div class="ntp_error termsAndConditions"></div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-2 control-label" for="input-privacy_policy_url">{{ privacy_policy_url }}</label>
+                    <div class="col-sm-10">
+                        <input type="text" name="payment_mobilpay_privacy_policy_url" value="{{ payment_mobilpay_privacy_policy_url }}" placeholder="{{ entry_privacy_policy_page_url }}" id="input-privacy_policy_url" class="form-control"/>
+                        <h5>{{ privacy_policy_url_detail }}</h5>
+                        <div class="ntp_error privacyPolicy"></div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-2 control-label" for="input-delivery_policy_url">{{ delivery_policy_url }}</label>
+                    <div class="col-sm-10">
+                        <input type="text" name="payment_mobilpay_delivery_policy_url" value="{{ payment_mobilpay_delivery_policy_url }}" placeholder="{{ entry_delivery_policy_page_url }}" id="input-delivery_policy_url" class="form-control"/>
+                        <h5>{{ delivery_policy_url_detail }}</h5>
+                        <div class="ntp_error deliveryPolicy"></div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-2 control-label" for="input-return_cancel_policy_url">{{ return_cancel_policy_url }}</label>
+                    <div class="col-sm-10">
+                        <input type="text" name="payment_mobilpay_return_cancel_policy_url" value="{{ payment_mobilpay_return_cancel_policy_url }}" placeholder="{{ entry_return_cancel_policy_page_url }}" id="input-return_cancel_policy_url" class="form-control"/>
+                        <h5>{{ return_cancel_policy_url_detail }}</h5>
+                        <div class="ntp_error returnAndCancelPolicy"></div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-2 control-label" for="input-gdpr_policy_url">{{ gdpr_policy_url }}</label>
+                    <div class="col-sm-10">
+                        <input type="text" name="payment_mobilpay_gdpr_policy_url" value="{{ payment_mobilpay_gdpr_policy_url }}" placeholder="{{ entry_gdpr_policy_page_url }}" id="input-gdpr_policy_url" class="form-control"/>
+                        <h5>{{ gdpr_policy_url_detail }}</h5>
+                        <div class="ntp_error gdprPolicy"></div>
+                    </div>
+                </div>
+
+            <h4>{{ ntp_mandatory_logo }}</h4>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label" for="input-image_visa_logo_link">{{ image_visa_logo_link }}</label>
+                    <div class="col-sm-10">
+                        <input type="text" name="payment_mobilpay_image_visa_logo_link" value="{{ payment_mobilpay_image_visa_logo_link }}" placeholder="{{ image_visa_logo_link_placeholder }}" id="input-image_visa_logo_link" class="form-control"/>
+                        <h5>{{ image_visa_logo_link_detail }}</h5>
+                        <div class="ntp_error visaLogoLink"></div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-2 control-label" for="input-image_master_logo_link">{{ image_master_logo_link }}</label>
+                    <div class="col-sm-10">
+                        <input type="text" name="payment_mobilpay_image_master_logo_link" value="{{ payment_mobilpay_image_master_logo_link }}" placeholder="{{ image_master_logo_link_placeholder }}" id="input-image_master_logo_link" class="form-control"/>
+                        <h5>{{ image_master_logo_link_detail }}</h5>
+                        <div class="ntp_error masterLogoLink"></div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-2 control-label" for="input-image_netopia_logo_link">{{ image_netopia_logo_link }}</label>
+                    <div class="col-sm-10">
+                        <input type="text" name="payment_mobilpay_image_netopia_logo_link" value="{{ payment_mobilpay_image_netopia_logo_link }}" placeholder="{{ image_netopia_logo_link_placeholder }}" id="input-image_netopia_logo_link" class="form-control"/>
+                        <h5>{{ image_netopia_logo_link_detail }}</h5>
+                        <div class="ntp_error netopiaLogoLink"></div>
+                    </div>
+                </div>
+
+          <div class="form-group">
+             <label class="col-sm-3 control-label" for="input-sort-order">{{ ask_ntp_verification }}</label>
+             <div class="col-sm-3">
+                 <button disabled id="send_ntp_verify" type="button" class="btn btn-primary" onclick="sendVerifyRequest()">{{ send_ntp_verify }}</button>
+              </div>
+              <label class="col-sm-2 control-label" for="input-sort-order">{{ do_self_verification }}</label>
+              <div class="col-sm-4">
+                <button   type="button" class="btn btn-primary" onclick="selfValidation()">{{ self_validation }}</button>
+              </div>
+          </div>
+          <div class="">
+              <div class="col-sm-6" id="sendVerifyRequest_message" style="padding-left: 10px; font-weight: bold;"></div>
+              <div class="col-sm-6" id="selfvalidation_message" style="padding-left: 10px; font-weight: bold;"></div>
+          </div>
 		</div>
 	  </form>
 	</div>
   </div>
 </div>
+    <script >
+        function selfValidation(){
+            $.ajax({
+                url: '/admin/index.php?route=extension/payment/mobilpay/selfValidation&user_token={{ user_token }}',
+                method: 'POST',
+                dataType: 'json',
+                data : $("#form-payment").serialize(),
+                success: function (response) {
+                    console.log(response);
+                    $('#selfvalidation_message').removeClass();
+                    $('.ntp_error').removeClass('alert alert-danger');
+                    $('.ntp_error').html('');
+                    $('#selfvalidation_message').text(response.msg);
+                    if(response.status){
+                        $("#send_ntp_verify").attr("disabled", false);
+                        $('#selfvalidation_message').addClass('alert alert-success');
+                    } else {
+                        $('#selfvalidation_message').addClass('alert alert-danger');
+                        console.log( $('.ntp_error').html(''));
+
+                        $.each(response.result.urls.error, function( index, value ) {
+                            $("."+index).html(value);
+                            $("."+index).addClass('alert alert-danger');
+
+                        });
+                        $.each(response.result.images.error, function( index, value ) {
+                            $("."+index).html(value);
+                            $("."+index).addClass('alert alert-danger');
+
+                        });
+
+                        console.log(response.result.declare.error);
+                        $.each(response.result.declare.error, function( index, value ) {
+                            $("."+index).html(value);
+                            $("."+index).addClass('alert alert-danger');
+                        });
+
+                        console.log(response.result.ssl.error);
+                        $.each(response.result.ssl.error, function( index, value ) {
+                            $("."+index).html(value);
+                            $("."+index).addClass('alert alert-danger');
+                        });
+
+                        $("#send_ntp_verify").attr("disabled", true);
+                    }
+                }
+            })
+        }
+        function sendVerifyRequest(){
+            $.ajax({
+                url: '/admin/index.php?route=extension/payment/mobilpay/sendVerifyRequest&user_token={{ user_token }}',
+                method: 'POST',
+                dataType: 'json',
+                success: function (response) {
+                    console.log("New Token");
+                    console.log(response)
+                }
+            })
+        }
+    </script>
 {{ footer }}
