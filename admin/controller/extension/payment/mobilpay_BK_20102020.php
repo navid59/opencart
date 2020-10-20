@@ -1,18 +1,8 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 class ControllerExtensionPaymentMobilpay extends Controller {
 	private $error = array();
     protected $_domain;
-    protected $outEnvKey;
-    protected $outEncData;
-    protected $jsonData;
-    protected $encData;
-    const ERROR_LOAD_X509_CERTIFICATE = 0x10000001;
-    const ERROR_ENCRYPT_DATA          = 0x10000002;
-
-
 	public function index() {
 	    // get User Token
         $data['user_token'] = $this->session->data['user_token'];
@@ -22,24 +12,14 @@ class ControllerExtensionPaymentMobilpay extends Controller {
 		$this->document->setTitle($this->language->get('heading_title'));
 		
 		$this->load->model('setting/setting');
-
-
+			
 		if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validate()) {
-
-//		    //die(print_r($this->request->files['payment_mobilpay_live_pub_key']));
-//            $test = [];
-//            if ($this->request->files['payment_mobilpay_live_pub_key']['size'] > 0) {
-//                //die('lllll');
-//                $test = array_merge($this->request->post,['payment_mobilpay_live_pub_key'=>$this->request->files['payment_mobilpay_live_pub_key']['name']]);
-//                //die(print_r($test));
-//            }
-            $this->model_setting_setting->editSetting('payment_mobilpay', array_merge($this->request->post,$this->request->files));
-            $this->session->data['success'] = $this->language->get('text_success');
+			$this->model_setting_setting->editSetting('payment_mobilpay', $this->request->post);				
+			
+			$this->session->data['success'] = $this->language->get('text_success');
 
 			$this->response->redirect($this->url->link('marketplace/extension', 'user_token=' . $this->session->data['user_token'] . '&type=payment', true));
 		}
-
-        //die(print_r($this->request->files));
 
  		if (isset($this->error['warning'])) {
 			$data['error_warning'] = $this->error['warning'];
@@ -73,8 +53,7 @@ class ControllerExtensionPaymentMobilpay extends Controller {
 		$data['action'] = $this->url->link('extension/payment/mobilpay', 'user_token=' . $this->session->data['user_token'], true);
 		
 		$data['cancel'] = $this->url->link('marketplace/extension', 'user_token=' . $this->session->data['user_token'] . '&type=payment', true);
-
-
+		
 		if (isset($this->request->post['payment_mobilpay_signature'])) {
 			$data['payment_mobilpay_signature'] = $this->request->post['payment_mobilpay_signature'];
 		} else {
@@ -155,51 +134,30 @@ class ControllerExtensionPaymentMobilpay extends Controller {
 			$data['payment_mobilpay_sort_order'] = $this->config->get('payment_mobilpay_sort_order');
 		}
 
-
-
-        if (!empty($this->request->files['payment_mobilpay_live_pub_key']["name"])) {
-            $data['payment_mobilpay_live_pub_key'] = $this->request->files['payment_mobilpay_live_pub_key']["name"];
+        if (isset($this->request->post['payment_mobilpay_live_pub_key'])) {
+            $data['payment_mobilpay_live_pub_key'] = $this->request->post['payment_mobilpay_live_pub_key'];
         } else {
             $data['payment_mobilpay_live_pub_key'] = $this->config->get('payment_mobilpay_live_pub_key');
         }
-        if (isset($this->error['payment_mobilpay_live_pub_key'])) {
-            $data['error_payment_mobilpay_live_pub_key'] = $this->error['payment_mobilpay_live_pub_key'];
-        } else {
-            $data['error_payment_mobilpay_live_pub_key'] = '';
-        }
 
-
-        if (!empty($this->request->files['payment_mobilpay_sand_pub_key']["name"])) {
-            $data['payment_mobilpay_sand_pub_key'] = $this->request->files['payment_mobilpay_sand_pub_key']["name"];
-        } else {
-            $data['payment_mobilpay_sand_pub_key'] = $this->config->get('payment_mobilpay_sand_pub_key');
-        }
-        if (isset($this->error['payment_mobilpay_sand_pub_key'])) {
-            $data['error_payment_mobilpay_sand_pub_key'] = $this->error['payment_mobilpay_sand_pub_key'];
-        } else {
-            $data['error_payment_mobilpay_sand_pub_key'] = '';
-        }
-
-        if (!empty($this->request->files['payment_mobilpay_live_pri_key']["name"])) {
-            $data['payment_mobilpay_live_pri_key'] = $this->request->files['payment_mobilpay_live_pri_key']["name"];
+        if (isset($this->request->post['payment_mobilpay_live_pri_key'])) {
+            $data['payment_mobilpay_live_pri_key'] = $this->request->post['payment_mobilpay_live_pri_key'];
         } else {
             $data['payment_mobilpay_live_pri_key'] = $this->config->get('payment_mobilpay_live_pri_key');
         }
-        if (isset($this->error['payment_mobilpay_live_pri_key'])) {
-            $data['error_payment_mobilpay_live_pri_key'] = $this->error['payment_mobilpay_live_pri_key'];
+
+        if (isset($this->request->post['payment_mobilpay_sand_pub_key'])) {
+            $data['payment_mobilpay_sand_pub_key'] = $this->request->post['payment_mobilpay_sand_pub_key'];
         } else {
-            $data['error_payment_mobilpay_live_pri_key'] = '';
+            $data['payment_mobilpay_sand_pub_key'] = $this->config->get('payment_mobilpay_sand_pub_key');
         }
-        if (!empty($this->request->files['payment_mobilpay_sand_pri_key']["name"])) {
-            $data['payment_mobilpay_sand_pri_key'] = $this->request->files['payment_mobilpay_sand_pri_key']["name"];
+
+        if (isset($this->request->post['payment_mobilpay_sand_pri_key'])) {
+            $data['payment_mobilpay_sand_pri_key'] = $this->request->post['payment_mobilpay_sand_pri_key'];
         } else {
             $data['payment_mobilpay_sand_pri_key'] = $this->config->get('payment_mobilpay_sand_pri_key');
         }
-        if (isset($this->error['payment_mobilpay_sand_pri_key'])) {
-            $data['error_payment_mobilpay_sand_pri_key'] = $this->error['payment_mobilpay_sand_pri_key'];
-        } else {
-            $data['error_payment_mobilpay_sand_pri_key'] = '';
-        }
+
 
         if (isset($this->request->post['payment_mobilpay_conditions_complete_description'])) {
             $data['payment_mobilpay_conditions_complete_description'] = $this->request->post['payment_mobilpay_conditions_complete_description'];
@@ -286,25 +244,7 @@ class ControllerExtensionPaymentMobilpay extends Controller {
 		$this->response->setOutput($this->load->view('extension/payment/mobilpay', $data));
 	}
 
-    protected function uploadFile($file,$allowTypes,$fieldName)
-    {
-        // File path config
-        $targetFilePath = $this->_getUploadDir() . basename($file["name"]);
-        $fileType = pathinfo($targetFilePath, PATHINFO_EXTENSION);
-        // Allow certain file formats
-        if(!in_array($fileType, $allowTypes)) {
-            $this->error[$fieldName] = $this->language->get('error_type');
-        } else if($file['size'] <= 0 ) {
-            $this->error[$fieldName] = $this->language->get('error_size');
-        } else {
-            if (!move_uploaded_file($file["tmp_name"], $targetFilePath)) {
-                $this->error[$fieldName] = $this->language->get('error_file_upload');
-            }
-        }
-    }
-
-
-    private function validate() {
+	private function validate() {
 		if (!$this->user->hasPermission('modify', 'extension/payment/mobilpay')) {
 			$this->error['warning'] = $this->language->get('error_permission');
 		}
@@ -312,20 +252,6 @@ class ControllerExtensionPaymentMobilpay extends Controller {
 		if (!$this->request->post['payment_mobilpay_signature']) {
 			$this->error['signature'] = $this->language->get('error_signature');
 		}
-        if(!empty($this->request->files['payment_mobilpay_live_pub_key']['name'])) {
-           $this->uploadFile($this->request->files['payment_mobilpay_live_pub_key'],['cer'],'payment_mobilpay_live_pub_key');
-        }
-
-        if(!empty($this->request->files['payment_mobilpay_live_pri_key']['name'])) {
-            $this->uploadFile($this->request->files['payment_mobilpay_live_pri_key'],['key'],'payment_mobilpay_live_pri_key');
-        }
-        if(!empty($this->request->files['payment_mobilpay_sand_pub_key']['name'])) {
-            $this->uploadFile($this->request->files['payment_mobilpay_sand_pub_key'],['cer'],'payment_mobilpay_sand_pub_key');
-        }
-
-        if(!empty($this->request->files['payment_mobilpay_sand_pri_key']['name'])) {
-            $this->uploadFile($this->request->files['payment_mobilpay_sand_pri_key'],['key'],'payment_mobilpay_sand_pri_key');
-        }
 		
 		return !$this->error;
 	}
@@ -384,8 +310,7 @@ class ControllerExtensionPaymentMobilpay extends Controller {
 
     public function checkImageValidation ($image) {
         $exist = 1;
-        $imagePath = $_SERVER['SERVER_NAME'].'/'.$image;
-        //die(var_dump($imagePath));
+        $imagePath = $_SERVER['DOCUMENT_ROOT'].'/'.$image;
         if(!file_exists($imagePath)) {
             $exist = 0;
         }
@@ -515,148 +440,4 @@ class ControllerExtensionPaymentMobilpay extends Controller {
         */
         echo (json_encode($jsonResponse));
     }
-
-    public function sendValidation() {
-        $ntpDeclare = array (
-            'completeDescription' => $this->config->get('payment_mobilpay_conditions_complete_description'),
-            'priceCurrency' => $this->config->get('payment_mobilpay_conditions_prices_currency'),
-            'contactInfo' => $this->config->get('payment_mobilpay_clarity_contact'),
-            'forbiddenBusiness' => $this->config->get('payment_mobilpay_conditions_forbidden_business')
-        );
-
-        $ntpUrl = array(
-            'termsAndConditions' => $this->config->get('payment_mobilpay_terms_conditions_url'),
-            'privacyPolicy' => $this->config->get('payment_mobilpay_privacy_policy_url'),
-            'deliveryPolicy' => $this->config->get('payment_mobilpay_delivery_policy_url'),
-            'returnAndCancelPolicy' => $this->config->get('payment_mobilpay_return_cancel_policy_url'),
-            'gdprPolicy' => $this->config->get('payment_mobilpay_gdpr_policy_url')
-        );
-
-        $ntpImg = array(
-            'visaLogoLink' => $this->config->get('payment_mobilpay_image_visa_logo_link'),
-            'masterLogoLink' => $this->config->get('payment_mobilpay_image_master_logo_link'),
-            'netopiaLogoLink' => $this->config->get('payment_mobilpay_image_netopia_logo_link')
-        );
-
-        $this->jsonData = $this->makeActivateJson($ntpDeclare, $ntpUrl, $ntpImg);
-
-        if(is_null($encResult = $this->encrypt())) {
-            $this->encData = array(
-                'env_key' => $this->getEnvKey(),
-                'data'    => $this->getEncData()
-            );
-
-            //die(var_dump($this->encData));
-
-            $result = json_decode($this->sendJsonCurl());
-
-            if($result->status) {
-                $response = array(
-                    'status' =>  true,
-                    'msg' => 'succesfully sent your request' );
-            } else {
-                $response = array(
-                    'status' =>  false,
-                    'msg' => 'Error, after send data!! ');
-            }
-        } else {
-            $response = array(
-                'status' =>  false,
-                'msg' => $encResult );
-        }
-        echo (json_encode($response));
-
-
-    }
-
-    public function getEnvKey()
-    {
-        return $this->outEnvKey;
-    }
-
-    public function getEncData()
-    {
-        return $this->outEncData;
-    }
-
-    public function encrypt()
-    {
-        $errorMessage = null;
-        if($this->config->get('payment_mobilpay_test') === 'sandbox') {
-            $pubFile =  $this->config->get('payment_mobilpay_sand_pub_key');
-        } else {
-            $pubFile =  $this->config->get('payment_mobilpay_live_pub_key');
-        }
-        $x509FilePath = $this->_getUploadDir().$pubFile;
-        $publicKey = openssl_pkey_get_public("file://{$x509FilePath}");
-        if($publicKey === false)
-        {
-            $this->outEncData = null;
-            $this->outEnvKey  = null;
-            $errorMessage = "Error while loading X509 public key certificate! Reason:";
-            while(($errorString = openssl_error_string()))
-            {
-                $errorMessage .= $errorString . "\n";
-            }
-        }
-        $srcData = $this->jsonData;
-        $publicKeys = array($publicKey);
-        $encData  = null;
-        $envKeys  = null;
-        $result   = openssl_seal($srcData, $encData, $envKeys, $publicKeys);
-        if($result === false)
-        {
-            $this->outEncData = null;
-            $this->outEnvKey  = null;
-            $errorMessage = "Error while encrypting data! Reason:";
-            while(($errorString = openssl_error_string()))
-            {
-                $errorMessage .= $errorString . "\n";
-            }
-            //throw new Exception($errorMessage, self::ERROR_ENCRYPT_DATA);
-        }
-        $this->outEncData = base64_encode($encData);
-        $this->outEnvKey  = base64_encode($envKeys[0]);
-        return $errorMessage;
-    }
-
-    protected function _getUploadDir()
-    {
-        return DIR_CATALOG.'Mobilpay/cert/';
-    }
-
-    function makeActivateJson($declareatins, $urls, $images) {
-        $jsonData = array(
-            "sac_key" => $this->config->get('payment_mobilpay_signature'),
-            "agrremnts" => array(
-                "declare" => $declareatins,
-                "urls"    => $urls,
-                "images"  => $images,
-                "ssl"     => 1
-            ),
-            "lastUpdate" => date("Y/m/d H:i:s"),
-            "platform" => 'OpenCart 3X'
-        );
-
-        $post_data = json_encode($jsonData, JSON_FORCE_OBJECT);
-        return $post_data;
-    }
-
-    public function sendJsonCurl(){
-        $url = 'https://netopia-payments-user-service-api-fqvtst6pfa-ez.a.run.app/user/verify';
-        $ch = curl_init($url);
-        $payload = json_encode($this->encData);
-        // Attach encoded JSON string to the POST fields
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
-        // Set the content type to application/json
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
-        // Return response instead of outputting
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        // Execute the POST request
-        $result = curl_exec($ch);
-        // Close cURL resource
-        curl_close($ch);
-        return $result;
-    }
-
 }

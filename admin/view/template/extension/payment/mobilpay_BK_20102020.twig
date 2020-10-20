@@ -183,45 +183,25 @@
           <div class="form-group">
               <label class="col-sm-2 control-label" for="input-live_pub_key">{{ entry_cert_live_pub_key_file }}</label>
               <div class="col-sm-10">
-                  <input type="file" name="payment_mobilpay_live_pub_key" id="input-live_pub_key">{{ payment_mobilpay_live_pub_key  }}
-                  {% if(error_payment_mobilpay_live_pub_key) %}
-                      <div class="alert alert-danger">
-                          {{ error_payment_mobilpay_live_pub_key }}
-                      </div>
-                  {% endif %}
+                  <input type="text" name="payment_mobilpay_live_pub_key" value="{{ payment_mobilpay_live_pub_key }}" placeholder="{{ entry_cert_live_pub_key_file }}" id="input-live_pub_key" class="form-control"/>
               </div>
           </div>
           <div class="form-group">
               <label class="col-sm-2 control-label" for="input-live_pri_key">{{ entry_cert_live_pri_key_file }}</label>
               <div class="col-sm-10">
-                  <input type="file" name="payment_mobilpay_live_pri_key"  id="input-live_pri_key" >{{ payment_mobilpay_live_pri_key}}
-                  {% if(error_payment_mobilpay_live_pri_key) %}
-                      <div class="alert alert-danger">
-                          {{ error_payment_mobilpay_live_pri_key }}
-                      </div>
-                  {% endif %}
+                  <input type="text" name="payment_mobilpay_live_pri_key" value="{{ payment_mobilpay_live_pri_key }}" placeholder="{{ entry_cert_live_pri_key_file }}" id="input-live_pri_key" class="form-control"/>
               </div>
           </div>
           <div class="form-group">
               <label class="col-sm-2 control-label" for="input-sand_pub_key">{{ entry_cert_sand_pub_key_file }}</label>
               <div class="col-sm-10">
-                  <input type="file" name="payment_mobilpay_sand_pub_key" id="input-sand_pub_key"  >{{ payment_mobilpay_sand_pub_key.name }}
-                  {% if(error_payment_mobilpay_sand_pub_key) %}
-                      <div class="alert alert-danger">
-                          {{ error_payment_mobilpay_sand_pub_key }}
-                      </div>
-                  {% endif %}
+                  <input type="text" name="payment_mobilpay_sand_pub_key" value="{{ payment_mobilpay_sand_pub_key }}" placeholder="{{ entry_cert_sand_pub_key_file }}" id="input-sand_pub_key" class="form-control"/>
               </div>
           </div>
           <div class="form-group">
               <label class="col-sm-2 control-label" for="input-sand_pri_key">{{ entry_cert_sand_pri_key_file }}</label>
               <div class="col-sm-10">
-                  <input type="file" name="payment_mobilpay_sand_pri_key" id="input-sand_pri_key" >{{ payment_mobilpay_sand_pri_key.name }}
-                  {% if(error_payment_mobilpay_sand_pri_key) %}
-                      <div class="alert alert-danger">
-                          {{ error_payment_mobilpay_sand_pri_key }}
-                      </div>
-                  {% endif %}
+                  <input type="text" name="payment_mobilpay_sand_pri_key" value="{{ payment_mobilpay_sand_pri_key }}" placeholder="{{ entry_cert_sand_pri_key_file }}" id="input-sand_pri_key" class="form-control"/>
               </div>
           </div>
           <h2>{{ ntp_agreements }}</h2>
@@ -336,7 +316,7 @@
                         {% endif %}
                     </select>
                     <h5>{{ declare_ssl_certificate_detail }}</h5>
-                    <div class="ntp_error hasSSL">xxx</div>
+                    <div class="ntp_error hasSSL"></div>
                 </div>
             </div>
 
@@ -418,7 +398,7 @@
           <div class="form-group">
              <label class="col-sm-3 control-label" for="input-sort-order">{{ ask_ntp_verification }}</label>
              <div class="col-sm-3">
-                 <button  id="send_ntp_verify" type="button" class="btn btn-primary" onclick="sendVerifyRequest()">{{ send_ntp_verify }}</button>
+                 <button disabled id="send_ntp_verify" type="button" class="btn btn-primary" onclick="sendVerifyRequest()">{{ send_ntp_verify }}</button>
               </div>
               <label class="col-sm-2 control-label" for="input-sort-order">{{ do_self_verification }}</label>
               <div class="col-sm-4">
@@ -436,9 +416,8 @@
 </div>
     <script >
         function selfValidation(){
-            console.log();
             $.ajax({
-                url: window.location.pathname + '?route=extension/payment/mobilpay/cc&user_token={{ user_token }}',
+                url: '/admin/index.php?route=extension/payment/mobilpay/selfValidation&user_token={{ user_token }}',
                 method: 'POST',
                 dataType: 'json',
                 data : $("#form-payment").serialize(),
@@ -485,20 +464,12 @@
         }
         function sendVerifyRequest(){
             $.ajax({
-                url: window.location.pathname + '?route=extension/payment/mobilpay/sendValidation&user_token={{ user_token }}',
+                url: '/admin/index.php?route=extension/payment/mobilpay/sendVerifyRequest&user_token={{ user_token }}',
                 method: 'POST',
                 dataType: 'json',
                 success: function (response) {
-                    console.log(response.status);
-                    $('#sendVerifyRequest_message').removeClass();
-                    $('#sendVerifyRequest_message').html(response.msg)
-                    if(response.status) {
-                        $('#sendVerifyRequest_message').addClass('alert alert-success')
-                    } else {
-                        $('#sendVerifyRequest_message').addClass('alert alert-danger')
-                    }
-                },
-                fail: function(response) {
+                    console.log("New Token");
+                    console.log(response)
                 }
             })
         }
