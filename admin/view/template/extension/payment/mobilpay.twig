@@ -181,27 +181,55 @@
           </div>
           <h2>{{ certification_key_upload }}</h2>
           <div class="form-group">
-              <label class="col-sm-2 control-label" for="input-live_pub_key">{{ entry_cert_live_pub_key_file }}</label>
+              <label class="col-sm-2 control-label" for="payment_mobilpay_live_pub_key_file">{{ entry_cert_live_pub_key_file }}</label>
               <div class="col-sm-10">
-                  <input type="text" name="payment_mobilpay_live_pub_key" value="{{ payment_mobilpay_live_pub_key }}" placeholder="{{ entry_cert_live_pub_key_file }}" id="input-live_pub_key" class="form-control"/>
+                  <input type="file" name="payment_mobilpay_live_pub_key_file" id="payment_mobilpay_live_pub_key_file">{{ payment_mobilpay_live_pub_key  }}
+                  <input type="hidden" name="payment_mobilpay_live_pub_key" id="payment_mobilpay_live_pub_key_file_name" value="{{ payment_mobilpay_live_pub_key}}">
+                  <div id="error_payment_mobilpay_live_pub_key_file"></div>
+                  {% if(error_payment_mobilpay_live_pub_key_file) %}
+                      <div class="alert alert-danger" >
+                          {{ error_payment_mobilpay_live_pub_key_file }}
+                      </div>
+                  {% endif %}
               </div>
           </div>
           <div class="form-group">
-              <label class="col-sm-2 control-label" for="input-live_pri_key">{{ entry_cert_live_pri_key_file }}</label>
+              <label class="col-sm-2 control-label" for="payment_mobilpay_live_pri_key_file">{{ entry_cert_live_pri_key_file }}</label>
               <div class="col-sm-10">
-                  <input type="text" name="payment_mobilpay_live_pri_key" value="{{ payment_mobilpay_live_pri_key }}" placeholder="{{ entry_cert_live_pri_key_file }}" id="input-live_pri_key" class="form-control"/>
+                  <input type="file" name="payment_mobilpay_live_pri_key_file"  id="payment_mobilpay_live_pri_key_file">{{ payment_mobilpay_live_pri_key }}
+                  <input type="hidden" name="payment_mobilpay_live_pri_key" id="payment_mobilpay_live_pri_key_file_name" value="{{ payment_mobilpay_live_pri_key }}">
+                  <div id="error_payment_mobilpay_live_pri_key_file"></div>
+                  {% if(error_payment_mobilpay_live_pri_key_file) %}
+                      <div class="alert alert-danger" id="error_payment_mobilpay_live_pri_key_file">
+                          {{ error_payment_mobilpay_live_pri_key_file }}
+                      </div>
+                  {% endif %}
               </div>
           </div>
           <div class="form-group">
-              <label class="col-sm-2 control-label" for="input-sand_pub_key">{{ entry_cert_sand_pub_key_file }}</label>
+              <label class="col-sm-2 control-label" for="payment_mobilpay_sand_pub_key_file">{{ entry_cert_sand_pub_key_file }}</label>
               <div class="col-sm-10">
-                  <input type="text" name="payment_mobilpay_sand_pub_key" value="{{ payment_mobilpay_sand_pub_key }}" placeholder="{{ entry_cert_sand_pub_key_file }}" id="input-sand_pub_key" class="form-control"/>
+                  <input type="file" name="payment_mobilpay_sand_pub_key_file" id="payment_mobilpay_sand_pub_key_file"  >{{ payment_mobilpay_sand_pub_key }}
+                  <input type="hidden" name="payment_mobilpay_sand_pub_key" id="payment_mobilpay_sand_pub_key_file_name" value="{{ payment_mobilpay_sand_pub_key }}">
+                  <div id="error_payment_mobilpay_sand_pub_key_file"></div>
+                  {% if(error_payment_mobilpay_sand_pub_key_file) %}
+                      <div class="alert alert-danger" id="error_payment_mobilpay_sand_pub_key_file">
+                          {{ error_payment_mobilpay_sand_pub_key_file }}
+                      </div>
+                  {% endif %}
               </div>
           </div>
           <div class="form-group">
-              <label class="col-sm-2 control-label" for="input-sand_pri_key">{{ entry_cert_sand_pri_key_file }}</label>
+              <label class="col-sm-2 control-label" for="payment_mobilpay_sand_pri_key_file">{{ entry_cert_sand_pri_key_file }}</label>
               <div class="col-sm-10">
-                  <input type="text" name="payment_mobilpay_sand_pri_key" value="{{ payment_mobilpay_sand_pri_key }}" placeholder="{{ entry_cert_sand_pri_key_file }}" id="input-sand_pri_key" class="form-control"/>
+                  <input type="file" name="payment_mobilpay_sand_pri_key_file" id="payment_mobilpay_sand_pri_key_file" >{{ payment_mobilpay_sand_pri_key }}
+                  <input type="hidden" name="payment_mobilpay_sand_pri_key" id="payment_mobilpay_sand_pri_key_file_name" value="{{ payment_mobilpay_sand_pri_key }}">
+                  <div id="error_payment_mobilpay_sand_pri_key_file"></div>
+                  {% if(error_payment_mobilpay_sand_pri_key_file) %}
+                      <div class="alert alert-danger" id="error_payment_mobilpay_sand_pri_key_file">
+                          {{ error_payment_mobilpay_sand_pri_key_file }}
+                      </div>
+                  {% endif %}
               </div>
           </div>
           <h2>{{ ntp_agreements }}</h2>
@@ -398,7 +426,7 @@
           <div class="form-group">
              <label class="col-sm-3 control-label" for="input-sort-order">{{ ask_ntp_verification }}</label>
              <div class="col-sm-3">
-                 <button disabled id="send_ntp_verify" type="button" class="btn btn-primary" onclick="sendVerifyRequest()">{{ send_ntp_verify }}</button>
+                 <button  id="send_ntp_verify" type="button" class="btn btn-primary" onclick="sendVerifyRequest()">{{ send_ntp_verify }}</button>
               </div>
               <label class="col-sm-2 control-label" for="input-sort-order">{{ do_self_verification }}</label>
               <div class="col-sm-4">
@@ -416,8 +444,9 @@
 </div>
     <script >
         function selfValidation(){
+            console.log();
             $.ajax({
-                url: '/admin/index.php?route=extension/payment/mobilpay/selfValidation&user_token={{ user_token }}',
+                url: window.location.pathname + '?route=extension/payment/mobilpay/cc&user_token={{ user_token }}',
                 method: 'POST',
                 dataType: 'json',
                 data : $("#form-payment").serialize(),
@@ -464,14 +493,57 @@
         }
         function sendVerifyRequest(){
             $.ajax({
-                url: '/admin/index.php?route=extension/payment/mobilpay/sendVerifyRequest&user_token={{ user_token }}',
+                url: window.location.pathname + '?route=extension/payment/mobilpay/sendValidation&user_token={{ user_token }}',
                 method: 'POST',
                 dataType: 'json',
                 success: function (response) {
-                    console.log("New Token");
-                    console.log(response)
+                    console.log(response.status);
+                    $('#sendVerifyRequest_message').removeClass();
+                    $('#sendVerifyRequest_message').html(response.msg)
+                    if(response.status) {
+                        $('#sendVerifyRequest_message').addClass('alert alert-success')
+                    } else {
+                        $('#sendVerifyRequest_message').addClass('alert alert-danger')
+                    }
+                },
+                fail: function(response) {
                 }
             })
+        }
+        $('#payment_mobilpay_live_pub_key_file',).on('change', function () {
+            validateFile($(this)[0].files[0],'cer',this);
+        });
+
+        $('#payment_mobilpay_live_pri_key_file').on('change', function(){
+            validateFile($(this)[0].files[0],'key',this);
+        });
+        $('#payment_mobilpay_sand_pub_key_file').on('change', function () {
+            validateFile($(this)[0].files[0],'cer',this);
+        });
+
+        $('#payment_mobilpay_sand_pri_key_file').on('change', function(){
+            validateFile($(this)[0].files[0],'key',this);
+        })
+        function validateFile(chosen_file,type,elm){
+            var fsize = chosen_file.size,
+                fname = chosen_file.name,
+                fextension = fname.substring(fname.lastIndexOf('.')+1);
+               $('#error_'+elm.name).removeClass();
+               $('#error_'+elm.name).html('');
+            if (fextension != type){
+                $('#error_'+elm.name).addClass('alert alert-danger');
+                $('#error_'+elm.name).html('This type of files are not allowed! just files with "cer" extensions as PUBLIC KEY and "key" extensions as "PRIVATE KEY" are accepted')
+                elm.value = "";
+                return false;
+            } else if(fsize > 3145728 || fsize <= 0) {
+                $('#error_'+elm.name).addClass('alert alert-danger');
+                $('#error_'+elm.name).html('Please choose a file with a valid size');
+                elm.value = "";
+                return false;
+            } else {
+                $('#'+elm.name+'_name').val(fname);
+                return true;
+            }
         }
     </script>
 {{ footer }}
