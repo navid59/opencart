@@ -109,8 +109,5 @@ $_['help_total']					= 'The checkout total the order must reach before this paym
 
 // Error
 $_['error_permission']   = 'Warning: You do not have permission to modify payment mobilPay!';
-$_['error_signature']    = 'Account Signature Required!';
-$_['error_type'] = 'public key must be of type cer and private key must be of type key!';
-$_['error_size'] = 'Not accepted empty file!!';
-$_['error_file_upload'] = 'file is not uploaded successfully please try again!';
+$_['error_signature']    = 'Account Signature Required!'; 
 ?>
