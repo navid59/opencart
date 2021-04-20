@@ -9,7 +9,7 @@ define('HTTPS_SERVER', 'http://opencart.test/');
 define('DIR_APPLICATION', '/home/navid/Projects/opencart/catalog/');
 define('DIR_SYSTEM', '/home/navid/Projects/opencart/system/');
 define('DIR_IMAGE', '/home/navid/Projects/opencart/image/');
-define('DIR_STORAGE', DIR_SYSTEM . 'storage/');
+define('DIR_STORAGE', '/home/navid/Projects/storage/');
 define('DIR_LANGUAGE', DIR_APPLICATION . 'language/');
 define('DIR_TEMPLATE', DIR_APPLICATION . 'view/theme/');
 define('DIR_CONFIG', DIR_SYSTEM . 'config/');

@@ -11,7 +11,7 @@ define('HTTPS_CATALOG', 'http://opencart.test/');
 define('DIR_APPLICATION', '/home/navid/Projects/opencart/admin/');
 define('DIR_SYSTEM', '/home/navid/Projects/opencart/system/');
 define('DIR_IMAGE', '/home/navid/Projects/opencart/image/');
-define('DIR_STORAGE', DIR_SYSTEM . 'storage/');
+define('DIR_STORAGE', '/home/navid/Projects/storage/');
 define('DIR_CATALOG', '/home/navid/Projects/opencart/catalog/');
 define('DIR_LANGUAGE', DIR_APPLICATION . 'language/');
 define('DIR_TEMPLATE', DIR_APPLICATION . 'view/template/');
