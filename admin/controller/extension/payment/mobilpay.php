@@ -550,7 +550,7 @@ class ControllerExtensionPaymentMobilpay extends Controller {
 
             $result = json_decode($this->sendJsonCurl());
 
-            if($result->status) {
+            if($result) {
                 $response = array(
                     'status' =>  true,
                     'msg' => 'succesfully sent your request' );
@@ -587,7 +587,8 @@ class ControllerExtensionPaymentMobilpay extends Controller {
         } else {
             $pubFile =  $this->config->get('payment_mobilpay_live_pub_key');
         }
-        $x509FilePath = $this->_getUploadDir().$pubFile;
+        $x509FilePath = $this->_getUploadDir().$pubFile['name'];
+        die(print_r($x509FilePath));
         $publicKey = openssl_pkey_get_public("file://{$x509FilePath}");
         if($publicKey === false)
         {
@@ -603,6 +604,7 @@ class ControllerExtensionPaymentMobilpay extends Controller {
         $publicKeys = array($publicKey);
         $encData  = null;
         $envKeys  = null;
+        // die(print_r($srcData));
         $result   = openssl_seal($srcData, $encData, $envKeys, $publicKeys);
         if($result === false)
         {
@@ -642,21 +644,88 @@ class ControllerExtensionPaymentMobilpay extends Controller {
         return $post_data;
     }
 
-    public function sendJsonCurl(){
-        $url = 'https://netopia-payments-user-service-api-fqvtst6pfa-ez.a.run.app/user/verify';
+    // public function sendJsonCurl(){
+    //     // $url = 'https://netopia-payments-user-service-api-fqvtst6pfa-ez.a.run.app/user/verify';
+    //     $url = 'https://netopia-payments-user-service-api-fqvtst6pfa-ew.a.run.app/financial/agreement/add2';
+    //     $ch = curl_init($url);
+    //     $payload = json_encode($this->encData);
+    //     // Attach encoded JSON string to the POST fields
+    //     curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
+    //     // Set the content type to application/json
+    //     curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
+    //     // Return response instead of outputting
+    //     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    //     // Execute the POST request
+    //     $result = curl_exec($ch);
+    //     // Close cURL resource
+    //     curl_close($ch);
+    //     return $result;
+    // }
+
+    public function sendJsonCurl() {
+        $url = 'https://netopia-payments-user-service-api-fqvtst6pfa-ew.a.run.app/financial/agreement/add2';
         $ch = curl_init($url);
+
         $payload = json_encode($this->encData);
+
         // Attach encoded JSON string to the POST fields
         curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
+
         // Set the content type to application/json
         curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
+
         // Return response instead of outputting
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
         // Execute the POST request
         $result = curl_exec($ch);
+
+          if (!curl_errno($ch)) {
+              switch ($http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE)) {
+                  case 200:  # OK
+                      $arr = array(
+                          'code'    => $http_code,
+                          'message' => "You send your request, successfully",
+                          'data'    => json_decode($result)
+                      );
+                      break;
+                  case 404:  # Not Found
+                      $arr = array(
+                          'code'    => $http_code,
+                          'message' => "You send request to wrong URL"
+                      );
+                      break;
+                  case 400:  # Bad Request
+                      $arr = array(
+                          'code'    => $http_code,
+                          'message' => "You send Bad Request"
+                      );
+                      break;
+                  case 405:  # Method Not Allowed
+                      $arr = array(
+                          'code'    => $http_code,
+                          'message' => "Your method of sending data are Not Allowed"
+                      );
+                      break;
+                  default:
+                      $arr = array(
+                          'code'    => $http_code,
+                          'message' => "Opps! Something happened, verify how you send data & try again!!!"
+                      );
+              }
+          } else {
+              $arr = array(
+                  'code'    => 0,
+                  'message' => "Opps! There is some problem, you are not able to send data!!!"
+              );
+          }
+
+
         // Close cURL resource
         curl_close($ch);
-        return $result;
-    }
+
+        $finalResult = json_encode($arr, JSON_FORCE_OBJECT);
+        return $finalResult;
+      }
 
 }
