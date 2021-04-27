@@ -1,8 +1,7 @@
 .idea/
 system/storage/
 system/storage/cache/*
-catalog/Mobilpay/cert/live*
-catalog/Mobilpay/cert/sandbox*
+catalog/Mobilpay/cert/*
 system/storage/logs/*
 
 ### OpenCart ###

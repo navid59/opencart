@@ -373,7 +373,7 @@ class ControllerExtensionPaymentMobilpay extends Controller {
             'privacyPolicy'         => $this->request->post['payment_mobilpay_privacy_policy_url'],
             'deliveryPolicy'        => $this->request->post['payment_mobilpay_delivery_policy_url'],
             'returnAndCancelPolicy' => $this->request->post['payment_mobilpay_return_cancel_policy_url'],
-            'gdprPolicy' => $_POST['payment_mobilpay_gdpr_policy_url']
+            'gdprPolicy'            => $this->request->post['payment_mobilpay_gdpr_policy_url']
         );
         $pages = [];
         foreach ($mandatoryPages as $key => $value) {
@@ -529,27 +529,30 @@ class ControllerExtensionPaymentMobilpay extends Controller {
 
     public function sendValidation() {
         $ntpDeclare = array (
-            'completeDescription' => $this->config->get('payment_mobilpay_conditions_complete_description'),
-            'priceCurrency' => $this->config->get('payment_mobilpay_conditions_prices_currency'),
-            'contactInfo' => $this->config->get('payment_mobilpay_clarity_contact'),
-            'forbiddenBusiness' => $this->config->get('payment_mobilpay_conditions_forbidden_business')
+            'completeDescription' => (bool) $this->config->get('payment_mobilpay_conditions_complete_description') == "yes" ? true : false,
+            'priceCurrency'       => (bool) $this->config->get('payment_mobilpay_conditions_prices_currency') == "yes" ? true : false,
+            'contactInfo'         =>  (bool) $this->config->get('payment_mobilpay_clarity_contact') == "yes" ? true : false,
+            'forbiddenBusiness'   =>  (bool) $this->config->get('payment_mobilpay_conditions_forbidden_business') == "yes" ? true : false
         );
 
         $ntpUrl = array(
-            'termsAndConditions' => $this->config->get('payment_mobilpay_terms_conditions_url'),
-            'privacyPolicy' => $this->config->get('payment_mobilpay_privacy_policy_url'),
-            'deliveryPolicy' => $this->config->get('payment_mobilpay_delivery_policy_url'),
+            'termsAndConditions'    => $this->config->get('payment_mobilpay_terms_conditions_url'),
+            'privacyPolicy'         => $this->config->get('payment_mobilpay_privacy_policy_url'),
+            'deliveryPolicy'        => $this->config->get('payment_mobilpay_delivery_policy_url'),
             'returnAndCancelPolicy' => $this->config->get('payment_mobilpay_return_cancel_policy_url'),
-            'gdprPolicy' => $this->config->get('payment_mobilpay_gdpr_policy_url')
+            'gdprPolicy'            => $this->config->get('payment_mobilpay_gdpr_policy_url')
         );
 
         $ntpImg = array(
-            'visaLogoLink' => $this->config->get('payment_mobilpay_image_visa_logo_link'),
-            'masterLogoLink' => $this->config->get('payment_mobilpay_image_master_logo_link'),
-            'netopiaLogoLink' => $this->config->get('payment_mobilpay_image_netopia_logo_link')
+            //'visaLogoLink' => $this->config->get('payment_mobilpay_image_visa_logo_link'),
+            //'masterLogoLink' => $this->config->get('payment_mobilpay_image_master_logo_link'),
+            //'netopiaLogoLink' => $this->config->get('payment_mobilpay_image_netopia_logo_link')
+            'netopiaLogo' => false
         );
 
         $this->jsonData = $this->makeActivateJson($ntpDeclare, $ntpUrl, $ntpImg);
+
+        die(var_dump($this->jsonData));
 
         if(is_null($encResult = $this->encrypt())) {
             $this->encData = array(
@@ -560,6 +563,7 @@ class ControllerExtensionPaymentMobilpay extends Controller {
             //die(var_dump($this->encData));
 
             $result = json_decode($this->sendJsonCurl());
+            // die(var_dump($result));
 
             if($result) {
                 $response = array(
@@ -598,8 +602,10 @@ class ControllerExtensionPaymentMobilpay extends Controller {
         } else {
             $pubFile =  $this->config->get('payment_mobilpay_live_pub_key');
         }
-        $x509FilePath = $this->_getUploadDir().$pubFile['name'];
-        die(print_r($x509FilePath));
+        // die(print_r($pubFile));
+        // $x509FilePath = $this->_getUploadDir().$pubFile['name'];
+        $x509FilePath = $this->_getUploadDir().$pubFile;
+        // die(print_r($x509FilePath));
         $publicKey = openssl_pkey_get_public("file://{$x509FilePath}");
         if($publicKey === false)
         {
@@ -641,13 +647,13 @@ class ControllerExtensionPaymentMobilpay extends Controller {
     function makeActivateJson($declareatins, $urls, $images) {
         $jsonData = array(
             "sac_key" => $this->config->get('payment_mobilpay_signature'),
-            "agrremnts" => array(
+            "agreements" => array(
                 "declare" => $declareatins,
                 "urls"    => $urls,
                 "images"  => $images,
-                "ssl"     => 1
+                "ssl"     => false
             ),
-            "lastUpdate" => date("Y/m/d H:i:s"),
+            "lastUpdate" => date("c", strtotime(date("Y-m-d H:i:s"))), // To have Date & Time format on RFC3339
             "platform" => 'OpenCart 3X'
         );
 
@@ -691,7 +697,7 @@ class ControllerExtensionPaymentMobilpay extends Controller {
         // Execute the POST request
         $result = curl_exec($ch);
 
-          if (!curl_errno($ch)) {
+        if (!curl_errno($ch) && 0) {
               switch ($http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE)) {
                   case 200:  # OK
                       $arr = array(
@@ -724,12 +730,12 @@ class ControllerExtensionPaymentMobilpay extends Controller {
                           'message' => "Opps! Something happened, verify how you send data & try again!!!"
                       );
               }
-          } else {
+        } else {
               $arr = array(
                   'code'    => 0,
                   'message' => "Opps! There is some problem, you are not able to send data!!!"
               );
-          }
+        }
 
 
         // Close cURL resource
@@ -737,6 +743,6 @@ class ControllerExtensionPaymentMobilpay extends Controller {
 
         $finalResult = json_encode($arr, JSON_FORCE_OBJECT);
         return $finalResult;
-      }
+    }
 
 }
